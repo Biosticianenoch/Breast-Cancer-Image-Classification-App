@@ -7,7 +7,7 @@ from fpdf import FPDF
 import os
 import datetime
 import tempfile
-
+import gdown
 # ------------------------- App Config -------------------------
 st.set_page_config(page_title="Mammogram Cancer Classifier", layout="centered", initial_sidebar_state="expanded")
 
@@ -18,15 +18,20 @@ else:
     st.session_state.visitor_count += 1
 
 # ------------------------- Load Model -------------------------
-@st.cache_resource
-def load_mammo_model():
-    model_path = os.path.expanduser("~/Downloads/mammogram_model.keras")
-    if not os.path.exists(model_path):
-        st.error(f"Model not found at: {model_path}")
-        st.stop()
-    return load_model(model_path)
+# Path to save downloaded model
+MODEL_PATH = "mammogram_cancer_model.h5"
 
-model = load_mammo_model()
+# Google Drive direct download link
+GDRIVE_URL = "https://drive.google.com/uc?export=download&id=1z_wDk2YPzvOz2DFt5WqoVvrq4Ia82edu"
+
+# Download only if not already downloaded
+if not os.path.exists(MODEL_PATH):
+    with st.spinner("Downloading model from Google Drive..."):
+        gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
+
+# Load the model
+model = load_model(MODEL_PATH)
+
 
 # ------------------------- Prediction Logic -------------------------
 def preprocess_and_predict(image: Image.Image):
