@@ -1,6 +1,6 @@
 streamlit
 streamlit-option-menu
-tensorflow==2.15.0
+tensorflow
 Pillow
 numpy
 fpdf
